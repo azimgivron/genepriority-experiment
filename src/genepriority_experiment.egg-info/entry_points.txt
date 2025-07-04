@@ -1,2 +1,0 @@
-[console_scripts]
-genepExp = genepriority_experiment.run:main

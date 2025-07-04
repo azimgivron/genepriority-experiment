@@ -1,8 +1,0 @@
-Metadata-Version: 2.4
-Name: genepriority-experiment
-Version: 0.0.0
-Summary: Experiment on genepriority
-Classifier: Programming Language :: Python :: 3.11
-Requires-Python: >=3.11
-Description-Content-Type: text/markdown
-Requires-Dist: genepriority@ git+https://github.com/azimgivron/genepriority.git@main
