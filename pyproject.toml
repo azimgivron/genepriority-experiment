@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "genepriority-experiment"
+readme = "README.md"
+description = "Experiment on genepriority"
+classifiers = ["Programming Language :: Python :: 3.11"]
+requires-python = ">=3.11"
+dynamic = ["version"]
+dependencies = [
+    "genepriority @ git+https://github.com/azimgivron/genepriority.git@main"
+]
+
+[project.scripts]
+genepExp = "genepriority_experiment.run:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
