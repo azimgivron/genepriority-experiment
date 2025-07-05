@@ -14,7 +14,8 @@ dependencies = [
 ]
 
 [project.scripts]
-genepExp = "genepriority_experiment.run:main"
+genepExp = "genepriority_experiment.script.run_experiments:main"
+genepExpPost = "genepriority_experiment.script.run_post:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
