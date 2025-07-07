@@ -17,12 +17,19 @@ import yaml
 from genepriority import Evaluation
 
 from genepriority_experiment.postprocessing.dataframes import (
-    generate_auc_loss_table, generate_bedroc_table)
+    generate_auc_loss_table,
+    generate_bedroc_table,
+)
 from genepriority_experiment.postprocessing.figures import (
-    plot_auc_boxplots, plot_avg_precision_boxplots, plot_bedroc_boxplots,
-    plot_pr_curves, plot_roc_curves)
-from genepriority_experiment.postprocessing.model_evaluation_collection import \
-    ModelEvaluationCollection
+    plot_auc_boxplots,
+    plot_avg_precision_boxplots,
+    plot_bedroc_boxplots,
+    plot_pr_curves,
+    plot_roc_curves,
+)
+from genepriority_experiment.postprocessing.model_evaluation_collection import (
+    ModelEvaluationCollection,
+)
 
 
 def post(args: argparse.Namespace):

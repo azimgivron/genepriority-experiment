@@ -10,7 +10,9 @@ classifiers = ["Programming Language :: Python :: 3.11"]
 requires-python = ">=3.11"
 dynamic = ["version"]
 dependencies = [
-    "genepriority @ git+https://github.com/azimgivron/genepriority.git@main"
+    "genepriority @ git+https://github.com/azimgivron/genepriority.git@main",
+    "torch==2.7.*",
+    "torchinfo==1.8.*"
 ]
 
 [project.scripts]
