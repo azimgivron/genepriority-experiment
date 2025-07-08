@@ -338,9 +338,21 @@ def comparison_with_si() -> List[List[str]]:
         "--tensorboard-dir",
         "/home/TheGreatestCoder/code/logs/with-si"
     ]
+    neural_cg_args = [
+        "python3",
+        "/home/TheGreatestCoder/code/genepriority_experiment/src/genepriority_experiment/script/run_neural_cf.py",
+        "--output",
+        "--output-path",
+        str(BASE_OUTPUT_DIR / "with-si"),
+        "--save-model",
+        str(BASE_OUTPUT_DIR / "with-si/model.pt"),
+        "--tensorboard-dir",
+        "/home/TheGreatestCoder/code/logs/with-si"
+    ]
     return [
         build_base_cmd("nega cv", "with-si", nega_args),
         build_base_cmd("genehound", "with-si", genehound_args),
+        neural_cg_args
     ]
 
 
