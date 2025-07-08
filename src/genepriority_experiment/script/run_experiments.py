@@ -22,7 +22,7 @@ from tqdm import tqdm
 
 # --- Constants and default settings ----------------------------------------
 
-BASE_OUTPUT_DIR = Path("output")
+BASE_OUTPUT_DIR = Path("genepriority-experiments-results")
 COMMON_ARGS = [
     "--num-folds",
     "5",
@@ -436,6 +436,7 @@ def main() -> None:
     for gen in generators:
         for command in gen():
             total += 1
+    failure = []
     with tqdm(desc="Running comparisons", unit="cmd", total=total) as pbar:
         for gen, name in zip(generators, names):
             logging.info("Starting category: %s", name)
@@ -449,8 +450,12 @@ def main() -> None:
                         ' '.join(cmd),
                         e.returncode
                     )
+                    failure.append((name, cmd))
                 finally:
                     pbar.update(1)
+    with open(BASE_OUTPUT_DIR / "error-log.txt", 'w') as file:
+        for name, cmd in failure:
+            file.write(f"{name}:\n{cmd}\n")
 
 
 if __name__ == "__main__":
