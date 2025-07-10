@@ -193,7 +193,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--data-path",
         type=Path,
-        default=Path("/home/TheGreatestCoder/code/experiments/data/data.npz"),
+        default=Path("/home/TheGreatestCoder/code/genepriority-experiment/data/data.npz"),
         help="npz file with arrays gene_disease, mask_train, mask_val, mask_test, gene_feats, disease_feats (default: %(default)s).",
     )
     parser.add_argument(

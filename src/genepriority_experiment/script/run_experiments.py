@@ -344,7 +344,6 @@ def comparison_with_si() -> List[List[str]]:
         "python3",
         "/home/TheGreatestCoder/code/genepriority_experiment/src/genepriority_experiment/script/run_neural_cf.py",
         "--output",
-        "--output-path",
         str(BASE_OUTPUT_DIR / "with-si/neuralCF"),
         "--save-model",
         str(BASE_OUTPUT_DIR / "with-si/neuralCF/model.pt"),
