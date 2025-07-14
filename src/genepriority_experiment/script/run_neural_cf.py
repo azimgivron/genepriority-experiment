@@ -1,26 +1,22 @@
 import argparse
+import logging
 from pathlib import Path
+from typing import Dict
 
 import numpy as np
 import torch
-from torch import nn
-import logging
-from genepriority import Results, Evaluation
+from genepriority import Evaluation, Results
 from genepriority.utils import serialize
 from sklearn.preprocessing import StandardScaler
+from torch import nn
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from torchinfo import summary
 from tqdm import tqdm
-from typing import Dict
 
 from genepriority_experiment.models.neural_cf import NeuralCF
 from genepriority_experiment.models.neural_cf_routines import (
-    GeneDiseaseDataset,
-    predict_full_matrix,
-    train_epoch,
-    validate_epoch,
-)
+    GeneDiseaseDataset, predict_full_matrix, train_epoch, validate_epoch)
 
 
 def run_fold(fold: int, args: argparse.Namespace, data: Dict[str, np.ndarray]) -> None:
@@ -83,9 +79,9 @@ def run_fold(fold: int, args: argparse.Namespace, data: Dict[str, np.ndarray]) -
         gene_feat_dim=gene_feats.shape[1],
         disease_feat_dim=disease_feats.shape[1],
         hidden_dims=args.hidden_dims,
-        dropout=args.dropout
+        dropout=args.dropout,
     ).to(device)
-    
+
     # Summary
     batch = next(iter(train_loader))
     g = batch["gene"].to(device)
@@ -95,14 +91,12 @@ def run_fold(fold: int, args: argparse.Namespace, data: Dict[str, np.ndarray]) -
     model_summary = summary(
         model,
         input_data=(g, d, gf, df),
-        col_names=("output_size", "num_params", "trainable")
+        col_names=("output_size", "num_params", "trainable"),
     )
     writer.add_text("hyperparameters", str(model_summary))
-    
+
     optimizer = torch.optim.Adam(
-        model.parameters(),
-        lr=args.lr,
-        weight_decay=args.weight_decay
+        model.parameters(), lr=args.lr, weight_decay=args.weight_decay
     )
     criterion = nn.MSELoss()
 
@@ -112,7 +106,7 @@ def run_fold(fold: int, args: argparse.Namespace, data: Dict[str, np.ndarray]) -
         logging.info(f"Loaded model weights from {args.load_model}")
 
     # Training loop
-    best_val = float('inf')
+    best_val = float("inf")
     no_improve = 0
     patience = args.patience
     best_state: Dict[str, torch.Tensor] = {}
@@ -121,7 +115,7 @@ def run_fold(fold: int, args: argparse.Namespace, data: Dict[str, np.ndarray]) -
         val_loss = validate_epoch(model, val_loader, criterion, device)
         writer.add_scalar("training_loss", np.sqrt(train_loss), epoch)
         writer.add_scalar("testing_loss", np.sqrt(val_loss), epoch)
-        
+
         # Early-stopping logic
         if val_loss < best_val:
             best_val = val_loss
@@ -140,7 +134,9 @@ def run_fold(fold: int, args: argparse.Namespace, data: Dict[str, np.ndarray]) -
     writer.close()
     if best_state:
         model.load_state_dict(best_state)
-        logging.info("Model weights rolled back to best epoch (val_loss = %.4f).", best_val)
+        logging.info(
+            "Model weights rolled back to best epoch (val_loss = %.4f).", best_val
+        )
 
     if args.save_model is not None:
         base_path = args.save_model
@@ -223,7 +219,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--dropout",
         type=float,
-        default=.3,
+        default=0.3,
         help="The dropout probability (default: %(default)s).",
     )
     parser.add_argument(
@@ -246,8 +242,10 @@ if __name__ == "__main__":
         help="List of MLP hidden layer sizes (default: %(default)s).",
     )
     parser.add_argument(
-        "--weight-decay", type=float, default=.01,
-        help="Weight decay (L2 penalty) for the optimizer (default: %(default)s)."
+        "--weight-decay",
+        type=float,
+        default=0.01,
+        help="Weight decay (L2 penalty) for the optimizer (default: %(default)s).",
     )
     parser.add_argument(
         "--load-model",

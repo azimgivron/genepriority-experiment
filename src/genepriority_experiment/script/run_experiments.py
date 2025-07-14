@@ -151,7 +151,7 @@ def comparison_si() -> List[List[str]]:
             "--results-filename",
             f"{name}-results.pickle",
             "--tensorboard-dir",
-            "/home/TheGreatestCoder/code/logs/si"
+            "/home/TheGreatestCoder/code/logs/si",
         ]
         commands.append(build_base_cmd("nega cv", "si", args))
     return commands
@@ -183,7 +183,7 @@ def comparison_latent() -> List[List[str]]:
             "--results-filename",
             f"latent{latent}-results.pickle",
             "--tensorboard-dir",
-            "/home/TheGreatestCoder/code/logs/latent"
+            "/home/TheGreatestCoder/code/logs/latent",
         ]
         commands.append(build_base_cmd("nega cv", "latent", args))
     return commands
@@ -220,7 +220,7 @@ def comparison_flip_label() -> List[List[str]]:
                 "--results-filename",
                 f"frac{frac:.2f}-results.pickle",
                 "--tensorboard-dir",
-                "/home/TheGreatestCoder/code/logs/flip-label"
+                "/home/TheGreatestCoder/code/logs/flip-label",
             ]
             commands.append(
                 build_base_cmd("nega cv", f"flip_label/factor{factor}", args)
@@ -254,7 +254,7 @@ def comparison_zero_sampling_factor() -> List[List[str]]:
             "--results-filename",
             f"factor{factor}-results.pickle",
             "--tensorboard-dir",
-            "/home/TheGreatestCoder/code/logs/zero_sampling_factor"
+            "/home/TheGreatestCoder/code/logs/zero_sampling_factor",
         ]
         commands.append(build_base_cmd("nega cv", "zero_sampling_factor", args))
     return commands
@@ -276,7 +276,7 @@ def comparison_no_si() -> List[List[str]]:
         "--results-filename",
         "nega-results.pickle",
         "--tensorboard-dir",
-        "/home/TheGreatestCoder/code/logs/no-si"
+        "/home/TheGreatestCoder/code/logs/no-si",
     ]
     genehound_args = [
         *COMMON_ARGS,
@@ -287,7 +287,7 @@ def comparison_no_si() -> List[List[str]]:
         "--results-filename",
         "genehound-results.pickle",
         "--tensorboard-dir",
-        "/home/TheGreatestCoder/code/logs/no-si"
+        "/home/TheGreatestCoder/code/logs/no-si",
     ]
     return [
         build_base_cmd("nega cv", "no-si", nega_args),
@@ -323,7 +323,7 @@ def comparison_with_si() -> List[List[str]]:
         "--results-filename",
         "nega-results.pickle",
         "--tensorboard-dir",
-        "/home/TheGreatestCoder/code/logs/with-si"
+        "/home/TheGreatestCoder/code/logs/with-si",
     ]
     genehound_args = [
         *COMMON_ARGS,
@@ -336,7 +336,7 @@ def comparison_with_si() -> List[List[str]]:
         "--results-filename",
         "genehound-results.pickle",
         "--tensorboard-dir",
-        "/home/TheGreatestCoder/code/logs/with-si"
+        "/home/TheGreatestCoder/code/logs/with-si",
     ]
     neural_cg_args = [
         "python3",
@@ -347,12 +347,12 @@ def comparison_with_si() -> List[List[str]]:
         "--save-model",
         str(BASE_OUTPUT_DIR / "with-si/model.pt"),
         "--tensorboard-dir",
-        "/home/TheGreatestCoder/code/logs/with-si"
+        "/home/TheGreatestCoder/code/logs/with-si",
     ]
     return [
         build_base_cmd("nega cv", "with-si", nega_args),
         build_base_cmd("genehound", "with-si", genehound_args),
-        neural_cg_args
+        neural_cg_args,
     ]
 
 
@@ -382,7 +382,7 @@ def comparison_with_si_no_max_dim() -> List[List[str]]:
         "--results-filename",
         "nega-results.pickle",
         "--tensorboard-dir",
-        "/home/TheGreatestCoder/code/logs/no-max_dim"
+        "/home/TheGreatestCoder/code/logs/no-max_dim",
     ]
     genehound_args = [*COMMON_ARGS] + [
         *side_args,
@@ -393,7 +393,7 @@ def comparison_with_si_no_max_dim() -> List[List[str]]:
         "--results-filename",
         "genehound-results.pickle",
         "--tensorboard-dir",
-        "/home/TheGreatestCoder/code/logs/no-max_dim"
+        "/home/TheGreatestCoder/code/logs/no-max_dim",
     ]
     return [
         build_base_cmd("nega cv", "no-max-dim", nega_args),

@@ -17,19 +17,12 @@ import yaml
 from genepriority import Evaluation
 
 from genepriority_experiment.postprocessing.dataframes import (
-    generate_auc_loss_table,
-    generate_bedroc_table,
-)
+    generate_auc_loss_table, generate_bedroc_table)
 from genepriority_experiment.postprocessing.figures import (
-    plot_auc_boxplots,
-    plot_avg_precision_boxplots,
-    plot_bedroc_boxplots,
-    plot_pr_curves,
-    plot_roc_curves,
-)
-from genepriority_experiment.postprocessing.model_evaluation_collection import (
-    ModelEvaluationCollection,
-)
+    plot_auc_boxplots, plot_avg_precision_boxplots, plot_bedroc_boxplots,
+    plot_pr_curves, plot_roc_curves)
+from genepriority_experiment.postprocessing.model_evaluation_collection import \
+    ModelEvaluationCollection
 
 
 def post(args: argparse.Namespace):
@@ -74,7 +67,7 @@ def post(args: argparse.Namespace):
     results_data = {}
     for name, path_str in zip(args.model_names, args.evaluation_paths):
         with Path(path_str).open("rb") as stream:
-            results_data[name] = pickle.load(stream)
+            results_data[name] = Evaluation(pickle.load(stream).results)
 
     results = ModelEvaluationCollection(results_data)
 
@@ -130,7 +123,7 @@ def post(args: argparse.Namespace):
         results.compute_bedroc_scores(),
         model_names=results.model_names,
         output_file=bedroc_plot_path,
-        figsize=(24, 10),
+        figsize=(30, 12),
         sharey=args.no_sharey,
     )
     logger.info("BEDROC boxplots saved: %s", bedroc_plot_path)

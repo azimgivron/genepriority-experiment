@@ -66,14 +66,16 @@ def plot_bedroc_boxplots(
         if box.legend_ is not None:
             box.legend_.remove()
 
-    fig.subplots_adjust(right=1 - (len(model_names) * 0.05), wspace=0.3)
+    axs[0].set_ylabel("BEDROC", fontsize=16)
+    fig.subplots_adjust(bottom=0.15)
     handles = [mpatches.Patch(color=c, label=m) for c, m in zip(COLORS, model_names)]
     fig.legend(
         handles,
         model_names,
-        loc="center right",
-        bbox_to_anchor=(0.98, 0.5),
-        fontsize=18,
+        loc="lower center",
+        bbox_to_anchor=(0.5, 0),
+        ncol=4,
+        fontsize=16,
     )
     plt.savefig(output_file, dpi=300, bbox_inches="tight")
     plt.close()
@@ -106,23 +108,20 @@ def plot_auc_boxplots(
         palette=COLORS[: auc.shape[-1]],
         showfliers=False,
     )
+    axis.set_ylabel("AUROC", fontsize=16)
     axis.set_xticks(range(len(model_names)))
     axis.set_xticklabels(["" for _ in model_names])
     axis.yaxis.set_tick_params(labelsize=14)
     axis.grid(axis="y", alpha=0.3)
-    axis.set_title(
-        "AUC",
-        fontsize=16,
-        weight="bold",
-    )
-    fig.subplots_adjust(right=1 - (len(model_names) * 0.1))
+    fig.subplots_adjust(bottom=0.15)
     handles = [mpatches.Patch(color=c, label=m) for c, m in zip(COLORS, model_names)]
     fig.legend(
         handles,
         model_names,
-        loc="center right",
-        bbox_to_anchor=(0.98, 0.5),
-        fontsize=18,
+        loc="lower center",
+        bbox_to_anchor=(0.5, 0),
+        ncol=2,
+        fontsize=16,
     )
     plt.savefig(output_file, dpi=300, bbox_inches="tight")
     plt.close()
@@ -159,19 +158,15 @@ def plot_avg_precision_boxplots(
     axis.set_xticklabels(["" for _ in model_names])
     axis.yaxis.set_tick_params(labelsize=14)
     axis.grid(axis="y", alpha=0.3)
-    axis.set_title(
-        "AVG Precision",
-        fontsize=16,
-        weight="bold",
-    )
-    fig.subplots_adjust(right=1 - (len(model_names) * 0.1))
+    axis.set_ylabel("AUPRC", fontsize=16)
+    fig.subplots_adjust(bottom=0.15)
     handles = [mpatches.Patch(color=c, label=m) for c, m in zip(COLORS, model_names)]
     fig.legend(
         handles,
         model_names,
-        loc="center right",
-        bbox_to_anchor=(0.98, 0.5),
-        fontsize=18,
+        loc="lower center",
+        bbox_to_anchor=(0.5, 0),
+        ncol=2,
     )
     plt.savefig(output_file, dpi=300, bbox_inches="tight")
     plt.close()
