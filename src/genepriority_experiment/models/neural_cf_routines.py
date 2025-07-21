@@ -1,10 +1,10 @@
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 import numpy as np
 import torch
 from torch import nn
 from torch.utils.data import DataLoader, Dataset
-
+from genepriority.utils import calculate_auroc_auprc
 
 class GeneDiseaseDataset(Dataset):
     """
@@ -126,7 +126,7 @@ def validate_epoch(
     loader: DataLoader,
     criterion: nn.Module,
     device: torch.device,
-) -> float:
+) -> Tuple[float, float, float]:
     """
     Run one epoch of validation.
 
@@ -137,10 +137,14 @@ def validate_epoch(
         device: Computation device.
 
     Returns:
-        Average validation loss over the epoch.
+         Tuple[float, float, float]:
+            - Average validation loss over the epoch.
+            - AUROC
+            - AUPRC
     """
     model.eval()
-    total_loss = 0.0
+    ys = []
+    preds = []
     with torch.no_grad():
         for batch in loader:
             g = batch["gene"].to(device)
@@ -148,13 +152,13 @@ def validate_epoch(
             gf = batch["g_feat"].to(device)
             df = batch["d_feat"].to(device)
             y = batch["label"].to(device)
-
+            
             pred = model(g, d, gf, df)
-            loss = criterion(pred, y)
-
-            batch_loss = loss.item()
-            total_loss += batch_loss * g.size(0)
-    return total_loss / len(loader.dataset)
+            ys.extend(y.tolist())
+            preds.extend(pred.tolist())
+    auroc, auprc = calculate_auroc_auprc(ys, preds)
+    loss = criterion(torch.Tensor(preds), torch.Tensor(ys)).item()
+    return loss, auroc, auprc
 
 
 def predict_full_matrix(

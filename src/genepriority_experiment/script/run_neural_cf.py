@@ -98,6 +98,13 @@ def run_fold(fold: int, args: argparse.Namespace, data: Dict[str, np.ndarray]) -
     optimizer = torch.optim.Adam(
         model.parameters(), lr=args.lr, weight_decay=args.weight_decay
     )
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+        optimizer,
+        mode='min',
+        factor=args.lr_factor,
+        patience=args.lr_patience,
+        min_lr=1e-5
+    )
     criterion = nn.MSELoss()
 
     if args.load_model is not None:
@@ -112,9 +119,15 @@ def run_fold(fold: int, args: argparse.Namespace, data: Dict[str, np.ndarray]) -
     best_state: Dict[str, torch.Tensor] = {}
     for epoch in range(1, args.epochs + 1):
         train_loss = train_epoch(model, train_loader, criterion, optimizer, device)
-        val_loss = validate_epoch(model, val_loader, criterion, device)
+        val_loss, auroc, auprc = validate_epoch(model, val_loader, criterion, device)
+        # Scheduler step on validation loss
+        scheduler.step(val_loss)
+        current_lr = optimizer.param_groups[0]['lr']
+        writer.add_scalar("learning_rate", current_lr, epoch)
         writer.add_scalar("training_loss", np.sqrt(train_loss), epoch)
         writer.add_scalar("testing_loss", np.sqrt(val_loss), epoch)
+        writer.add_scalar("auc", auroc, epoch)
+        writer.add_scalar("average precision", auprc, epoch)
 
         # Early-stopping logic
         if val_loss < best_val:
@@ -189,7 +202,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--data-path",
         type=Path,
-        default=Path("/home/TheGreatestCoder/code/experiments/data/data.npz"),
+        default=Path("/home/TheGreatestCoder/code/genepriority_experiment/data/data.npz"),
         help="npz file with arrays gene_disease, mask_train, mask_val, mask_test, gene_feats, disease_feats (default: %(default)s).",
     )
     parser.add_argument(
@@ -201,8 +214,20 @@ if __name__ == "__main__":
     parser.add_argument(
         "--lr",
         type=float,
-        default=1e-4,
+        default=1e-3,
         help="The learning rate (default: %(default)s).",
+    )
+    parser.add_argument(
+        "--lr_patience",
+        type=int,
+        default=200,
+        help="The learning rate patience before reducing it (default: %(default)s).",
+    )
+    parser.add_argument(
+        "--lr_factor",
+        type=float,
+        default=1/np.sqrt(10),
+        help="The learning rate reduing factor (default: %(default)s).",
     )
     parser.add_argument(
         "--epochs",

@@ -14,13 +14,15 @@ Usage:
 
 import subprocess
 import sys
+import logging
 from itertools import combinations
 from pathlib import Path
 from typing import List, Sequence
+from tqdm import tqdm
 
 # --- Constants and default settings ----------------------------------------
 
-BASE_OUTPUT_DIR = Path("experiment")
+BASE_OUTPUT_DIR = Path("genepriority-experiments-results")
 COMMON_ARGS = [
     "--num-folds",
     "5",
@@ -33,7 +35,7 @@ COMMON_ARGS = [
 # Flags needed for commands that require iterations, patience, and max_dims
 ADVANCED_ARGS = [
     "--iterations",
-    "2000",
+    "3000",
     "--patience",
     "200",
     "--max_dims",
@@ -65,9 +67,9 @@ def run_command(cmd: Sequence[str]) -> None:
     Raises:
         subprocess.CalledProcessError: If the command exits with a non-zero status.
     """
-    print(f"Running: {' '.join(cmd)}")
+    logging.info("Running: %s", ' '.join(cmd))
     subprocess.run(cmd, check=True)
-    print(f"Completed: {' '.join(cmd)}")
+    logging.info("Completed successfully")
 
 
 def all_sublists(items: List[Path]) -> List[List[Path]]:
@@ -146,14 +148,14 @@ def comparison_si() -> List[List[str]]:
             str(DISEASE_SI_PATH),
             "--gene-disease-path",
             str(GENE_DISEASE_PATH),
-            "--latent-dimension",
+            "--rank",
             "40",
             "--results-filename",
             f"{name}-results.pickle",
             "--tensorboard-dir",
-            "/home/TheGreatestCoder/code/logs/si",
+            f"/home/TheGreatestCoder/code/logs/si/{name}"
         ]
-        commands.append(build_base_cmd("nega cv", "si", args))
+        commands.append(build_base_cmd("nega cv", f"si/{name}", args))
     return commands
 
 
@@ -178,14 +180,14 @@ def comparison_latent() -> List[List[str]]:
             str(DISEASE_SI_PATH),
             "--gene-disease-path",
             str(GENE_DISEASE_PATH),
-            "--latent-dimension",
+            "--rank",
             str(latent),
             "--results-filename",
             f"latent{latent}-results.pickle",
             "--tensorboard-dir",
-            "/home/TheGreatestCoder/code/logs/latent",
+            f"/home/TheGreatestCoder/code/logs/latent/{latent}"
         ]
-        commands.append(build_base_cmd("nega cv", "latent", args))
+        commands.append(build_base_cmd("nega cv", f"latent/{latent}", args))
     return commands
 
 
@@ -215,15 +217,15 @@ def comparison_flip_label() -> List[List[str]]:
                 str(DISEASE_SI_PATH),
                 "--gene-disease-path",
                 str(GENE_DISEASE_PATH),
-                "--latent-dimension",
+                "--rank",
                 "40",
                 "--results-filename",
                 f"frac{frac:.2f}-results.pickle",
                 "--tensorboard-dir",
-                "/home/TheGreatestCoder/code/logs/flip-label",
+                f"/home/TheGreatestCoder/code/logs/flip-label/frac{frac:.2f}"
             ]
             commands.append(
-                build_base_cmd("nega cv", f"flip_label/factor{factor}", args)
+                build_base_cmd("nega cv", f"flip_label/frac{frac:.2f}", args)
             )
     return commands
 
@@ -249,14 +251,14 @@ def comparison_zero_sampling_factor() -> List[List[str]]:
             str(DISEASE_SI_PATH),
             "--gene-disease-path",
             str(GENE_DISEASE_PATH),
-            "--latent-dimension",
+            "--rank",
             "40",
             "--results-filename",
             f"factor{factor}-results.pickle",
             "--tensorboard-dir",
-            "/home/TheGreatestCoder/code/logs/zero_sampling_factor",
+            f"/home/TheGreatestCoder/code/logs/zero_sampling_factor/{factor}"
         ]
-        commands.append(build_base_cmd("nega cv", "zero_sampling_factor", args))
+        commands.append(build_base_cmd("nega cv", f"zero_sampling_factor/{factor}", args))
     return commands
 
 
@@ -271,12 +273,16 @@ def comparison_no_si() -> List[List[str]]:
         *COMMON_ARGS,
         "--zero-sampling-factor",
         "5",
-        "--latent-dimension",
+        "--rank",
         "40",
         "--results-filename",
         "nega-results.pickle",
         "--tensorboard-dir",
+<<<<<<< HEAD
         "/home/TheGreatestCoder/code/logs/no-si",
+=======
+        "/home/TheGreatestCoder/code/logs/no-si/nega"
+>>>>>>> refs/remotes/origin/main
     ]
     genehound_args = [
         *COMMON_ARGS,
@@ -287,11 +293,11 @@ def comparison_no_si() -> List[List[str]]:
         "--results-filename",
         "genehound-results.pickle",
         "--tensorboard-dir",
-        "/home/TheGreatestCoder/code/logs/no-si",
+        "/home/TheGreatestCoder/code/logs/no-si/genehound"
     ]
     return [
-        build_base_cmd("nega cv", "no-si", nega_args),
-        build_base_cmd("genehound", "no-si", genehound_args),
+        build_base_cmd("nega cv", "no-si/nega", nega_args),
+        build_base_cmd("genehound", "no-si/genehound", genehound_args),
     ]
 
 
@@ -306,7 +312,7 @@ def comparison_with_si() -> List[List[str]]:
         "--side-info",
         "--gene-side-info-paths",
         *format_paths_for_arg(GENE_SI_PATHS),
-        "--disease-sideinfo-paths",
+        "--disease-side-info-paths",
         str(DISEASE_SI_PATH),
         "--gene-disease-path",
         str(GENE_DISEASE_PATH),
@@ -318,12 +324,12 @@ def comparison_with_si() -> List[List[str]]:
         "--zero-sampling-factor",
         "5",
         *side_args,
-        "--latent-dimension",
+        "--rank",
         "40",
         "--results-filename",
         "nega-results.pickle",
         "--tensorboard-dir",
-        "/home/TheGreatestCoder/code/logs/with-si",
+        "/home/TheGreatestCoder/code/logs/with-si/nega"
     ]
     genehound_args = [
         *COMMON_ARGS,
@@ -336,23 +342,26 @@ def comparison_with_si() -> List[List[str]]:
         "--results-filename",
         "genehound-results.pickle",
         "--tensorboard-dir",
+<<<<<<< HEAD
         "/home/TheGreatestCoder/code/logs/with-si",
+=======
+        "/home/TheGreatestCoder/code/logs/with-si/genehound"
+>>>>>>> refs/remotes/origin/main
     ]
     neural_cg_args = [
         "python3",
         "/home/TheGreatestCoder/code/genepriority_experiment/src/genepriority_experiment/script/run_neural_cf.py",
         "--output",
-        "--output-path",
-        str(BASE_OUTPUT_DIR / "with-si"),
+        str(BASE_OUTPUT_DIR / "with-si/neuralCF"),
         "--save-model",
-        str(BASE_OUTPUT_DIR / "with-si/model.pt"),
+        str(BASE_OUTPUT_DIR / "with-si/neuralCF/model.pt"),
         "--tensorboard-dir",
-        "/home/TheGreatestCoder/code/logs/with-si",
+        "/home/TheGreatestCoder/code/logs/with-si/neural"
     ]
     return [
-        build_base_cmd("nega cv", "with-si", nega_args),
-        build_base_cmd("genehound", "with-si", genehound_args),
-        neural_cg_args,
+        build_base_cmd("nega cv", "with-si/nega", nega_args),
+        build_base_cmd("genehound", "with-si/genehound", genehound_args),
+        neural_cg_args
     ]
 
 
@@ -377,12 +386,12 @@ def comparison_with_si_no_max_dim() -> List[List[str]]:
         "--zero-sampling-factor",
         "5",
         *side_args,
-        "--latent-dimension",
+        "--rank",
         "40",
         "--results-filename",
         "nega-results.pickle",
         "--tensorboard-dir",
-        "/home/TheGreatestCoder/code/logs/no-max_dim",
+        "/home/TheGreatestCoder/code/logs/no-max_dim/nega"
     ]
     genehound_args = [*COMMON_ARGS] + [
         *side_args,
@@ -393,11 +402,11 @@ def comparison_with_si_no_max_dim() -> List[List[str]]:
         "--results-filename",
         "genehound-results.pickle",
         "--tensorboard-dir",
-        "/home/TheGreatestCoder/code/logs/no-max_dim",
+        "/home/TheGreatestCoder/code/logs/no-max_dim/genehound"
     ]
     return [
-        build_base_cmd("nega cv", "no-max-dim", nega_args),
-        build_base_cmd("genehound", "no-max-dim", genehound_args),
+        build_base_cmd("nega cv", "no-max-dim/nega", nega_args),
+        build_base_cmd("genehound", "no-max-dim/genehound", genehound_args),
     ]
 
 
@@ -410,6 +419,8 @@ def main() -> None:
 
     Logs any errors encountered during execution to stderr without stopping the full batch.
     """
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+                
     generators = [
         comparison_si,
         comparison_latent,
@@ -419,16 +430,39 @@ def main() -> None:
         comparison_with_si,
         comparison_with_si_no_max_dim,
     ]
+    names = [
+        "comparison_si",
+        "comparison_latent",
+        "comparison_flip_label",
+        "comparison_zero_sampling_factor",
+        "comparison_no_si",
+        "comparison_with_si",
+        "comparison_with_si_no_max_dim",
+    ]
+    total = 0
     for gen in generators:
-        for cmd in gen():
-            try:
-                run_command(cmd)
-            except subprocess.CalledProcessError as e:
-                print(
-                    f"Error: Command in {gen.__name__}:\n`{' '.join(cmd)}`\n-> failed with exit code {e.returncode}.",
-                    file=sys.stderr,
-                    end="\n\n",
-                )
+        for command in gen():
+            total += 1
+    failure = []
+    with tqdm(desc="Running comparisons", unit="cmd", total=total) as pbar:
+        for gen, name in zip(generators, names):
+            logging.info("Starting category: %s", name)
+            for cmd in gen():
+                try:
+                    run_command(cmd)
+                except subprocess.CalledProcessError as e:
+                    logging.error(
+                        "Command in %s:\n`%s`\n-> failed with exit code %s.",
+                        gen.__name__,
+                        ' '.join(cmd),
+                        e.returncode
+                    )
+                    failure.append((name, cmd))
+                finally:
+                    pbar.update(1)
+    with open(BASE_OUTPUT_DIR / "error-log.txt", 'w') as file:
+        for name, cmd in failure:
+            file.write(f"{name}:\n{cmd}\n")
 
 
 if __name__ == "__main__":
