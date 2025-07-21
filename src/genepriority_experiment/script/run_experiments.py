@@ -278,11 +278,7 @@ def comparison_no_si() -> List[List[str]]:
         "--results-filename",
         "nega-results.pickle",
         "--tensorboard-dir",
-<<<<<<< HEAD
-        "/home/TheGreatestCoder/code/logs/no-si",
-=======
         "/home/TheGreatestCoder/code/logs/no-si/nega"
->>>>>>> refs/remotes/origin/main
     ]
     genehound_args = [
         *COMMON_ARGS,
@@ -342,11 +338,7 @@ def comparison_with_si() -> List[List[str]]:
         "--results-filename",
         "genehound-results.pickle",
         "--tensorboard-dir",
-<<<<<<< HEAD
-        "/home/TheGreatestCoder/code/logs/with-si",
-=======
         "/home/TheGreatestCoder/code/logs/with-si/genehound"
->>>>>>> refs/remotes/origin/main
     ]
     neural_cg_args = [
         "python3",
